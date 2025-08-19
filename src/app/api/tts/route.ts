@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { openai } from "@/lib/openai";
+import { getOpenAI } from "@/lib/openai";
 import { VOICES } from "@/lib/validate";
 
 export const runtime = "nodejs";
@@ -30,6 +30,9 @@ export async function POST(req: NextRequest) {
     const model = process.env.PREFERRED_TTS_MODEL || "gpt-4o-mini-tts";
     const fallbackModel = "tts-1";
 
+    // Get OpenAI client
+    const openai = getOpenAI();
+    
     let audioResp;
     try {
       audioResp = await openai.audio.speech.create({
