@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
-import FormData from 'form-data';
+import { Readable } from 'stream';
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,31 +75,34 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio using form-data with buffer
+    // Transcribe audio using Blob created from buffer
     let transcription;
     try {
-      // Create FormData with the buffer
-      const form = new FormData();
-      form.append('file', buffer, {
-        filename: fileName,
-        contentType: audioFile.type,
-      });
-      form.append('model', 'whisper-1');
-      if (sourceLang !== 'auto') {
-        form.append('language', normalizeLanguageCode(sourceLang));
-      }
+      // Create a proper Blob object from the buffer
+      const blob = new Blob([buffer], { type: audioFile.type });
       
       transcription = await openai.audio.transcriptions.create({
-        file: form as unknown as File,
+        file: blob,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
-      console.error('FormData transcription attempt failed:', transcriptionError);
+      console.error('Blob transcription attempt failed:', transcriptionError);
       
-      // Fallback: try with buffer directly
+      // If Blob approach fails, try with a different method
+      // Create a File-like object that OpenAI can handle
+      const fileLike = {
+        type: audioFile.type,
+        size: buffer.length,
+        name: fileName,
+        arrayBuffer: async () => buffer,
+        stream: () => {
+          return Readable.from(buffer);
+        }
+      };
+      
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as unknown as File,
+        file: fileLike as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
