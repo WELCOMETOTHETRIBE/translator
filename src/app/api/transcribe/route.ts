@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
+import FormData from 'form-data';
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,7 +78,6 @@ export async function POST(request: NextRequest) {
     // Transcribe audio using FormData approach
     let transcription;
     try {
-      const FormData = require('form-data');
       const form = new FormData();
       form.append('file', buffer, {
         filename: fileName,
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
       });
       
       transcription = await openai.audio.transcriptions.create({
-        file: form as any,
+        file: form as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
       
       // Try with a different approach - use buffer directly
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as any,
+        file: buffer as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
