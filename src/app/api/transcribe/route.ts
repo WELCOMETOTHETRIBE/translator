@@ -75,22 +75,10 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio using Blob created from buffer
+    // Transcribe audio using File-like object created from buffer
     let transcription;
     try {
-      // Create a proper Blob object from the buffer
-      const blob = new Blob([buffer], { type: audioFile.type });
-      
-      transcription = await openai.audio.transcriptions.create({
-        file: blob,
-        model: 'whisper-1',
-        language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
-      });
-    } catch (transcriptionError) {
-      console.error('Blob transcription attempt failed:', transcriptionError);
-      
-      // If Blob approach fails, try with a different method
-      // Create a File-like object that OpenAI can handle
+      // Create a proper File-like object that OpenAI can handle
       const fileLike = {
         type: audioFile.type,
         size: buffer.length,
@@ -103,6 +91,23 @@ export async function POST(request: NextRequest) {
       
       transcription = await openai.audio.transcriptions.create({
         file: fileLike as unknown as File,
+        model: 'whisper-1',
+        language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
+      });
+    } catch (transcriptionError) {
+      console.error('File-like transcription attempt failed:', transcriptionError);
+      
+      // If File-like approach fails, try with a different method
+      // Create a simpler object with just the essential properties
+      const simpleFile = {
+        type: audioFile.type,
+        size: buffer.length,
+        name: fileName,
+        arrayBuffer: async () => buffer
+      };
+      
+      transcription = await openai.audio.transcriptions.create({
+        file: simpleFile as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
