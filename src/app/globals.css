@@ -18,36 +18,55 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-attachment: fixed;
     color: white;
+    /* iOS safe area handling */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Improve touch targets on mobile */
+  @media (max-width: 640px) {
+    button, select, input {
+      min-height: 44px; /* iOS recommended minimum touch target */
+    }
+  }
+
+  /* Prevent zoom on input focus on iOS */
+  @media screen and (max-width: 640px) {
+    input, select, textarea {
+      font-size: 16px;
+    }
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl;
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl sm:rounded-3xl shadow-2xl;
   }
   
   .glass-input {
-    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40;
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-3 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 text-sm sm:text-base;
   }
   
   .btn-gradient-primary {
-    @apply bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+    @apply bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
   }
   
   .btn-gradient-secondary {
-    @apply bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
   }
   
   .btn-gradient-accent {
-    @apply bg-gradient-to-r from-pink-500 to-red-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+    @apply bg-gradient-to-r from-pink-500 to-red-500 text-white font-semibold rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
   }
   
   .message-bubble-left {
-    @apply bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-3xl p-6 backdrop-blur-sm;
+    @apply bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm;
   }
   
   .message-bubble-right {
-    @apply bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-3xl p-6 backdrop-blur-sm;
+    @apply bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm;
   }
   
   .floating-element {

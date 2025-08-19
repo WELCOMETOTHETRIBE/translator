@@ -29,7 +29,7 @@ export default function UploadButton({ onSelect, disabled = false }: Props) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       <input
         ref={fileInputRef}
         type="file"
@@ -42,22 +42,22 @@ export default function UploadButton({ onSelect, disabled = false }: Props) {
         onClick={handleClick}
         disabled={disabled}
         className="
-          w-full h-24 rounded-3xl font-semibold text-lg transition-all duration-300
+          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300
           btn-gradient-secondary hover:shadow-2xl
           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
           border-2 border-dashed border-white/30 hover:border-white/50
         "
       >
-        <div className="flex items-center justify-center gap-4">
-          <div className="text-4xl">📁</div>
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
+          <div className="text-3xl sm:text-4xl">📁</div>
           <div className="text-center">
-            <div className="text-xl font-bold">Upload Audio File</div>
-            <div className="text-sm opacity-80">WAV, MP3, M4A, WebM, OGG</div>
+            <div className="text-lg sm:text-xl font-bold">Upload Audio File</div>
+            <div className="text-xs sm:text-sm opacity-80">WAV, MP3, M4A, WebM, OGG</div>
           </div>
         </div>
       </button>
       
-      <div className="text-center text-sm text-white/70">
+      <div className="text-center text-xs sm:text-sm text-white/70 px-2">
         <p>Maximum file size: 25MB</p>
       </div>
     </div>

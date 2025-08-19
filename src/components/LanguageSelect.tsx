@@ -18,7 +18,7 @@ export default function LanguageSelect({
   placeholder = "Select language" 
 }: Props) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-2 sm:space-y-3">
       <label className="block text-sm font-medium text-white">
         {label}
       </label>
@@ -26,7 +26,7 @@ export default function LanguageSelect({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="glass-input w-full appearance-none pr-10"
+          className="glass-input w-full appearance-none pr-10 text-sm sm:text-base"
         >
           <option value="" className="bg-gray-800 text-white">
             {placeholder}
@@ -38,7 +38,7 @@ export default function LanguageSelect({
           ))}
         </select>
         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <svg className="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>

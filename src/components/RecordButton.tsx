@@ -99,12 +99,12 @@ export default function RecordButton({ onComplete, disabled = false }: Props) {
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       <button
         onClick={isRecording ? stopRecording : startRecording}
         disabled={disabled}
         className={`
-          w-full h-24 rounded-3xl font-semibold text-lg transition-all duration-300 relative overflow-hidden
+          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300 relative overflow-hidden
           ${isRecording 
             ? 'btn-gradient-accent hover:shadow-2xl' 
             : 'btn-gradient-primary hover:shadow-2xl'
@@ -112,24 +112,24 @@ export default function RecordButton({ onComplete, disabled = false }: Props) {
           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
         `}
       >
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex items-center justify-center gap-3 sm:gap-4">
           {isRecording ? (
             <>
               <div className="relative">
-                <div className="w-8 h-8 bg-white rounded-full animate-pulse-slow"></div>
-                <div className="absolute inset-0 w-8 h-8 bg-white/30 rounded-full animate-ping"></div>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full animate-pulse-slow"></div>
+                <div className="absolute inset-0 w-6 h-6 sm:w-8 sm:h-8 bg-white/30 rounded-full animate-ping"></div>
               </div>
               <div className="text-center">
-                <div className="text-xl font-bold">Stop Recording</div>
-                <div className="text-sm opacity-90">{formatTime(recordingTime)}</div>
+                <div className="text-lg sm:text-xl font-bold">Stop Recording</div>
+                <div className="text-xs sm:text-sm opacity-90">{formatTime(recordingTime)}</div>
               </div>
             </>
           ) : (
             <>
-              <div className="text-4xl">🎤</div>
+              <div className="text-3xl sm:text-4xl">🎤</div>
               <div className="text-center">
-                <div className="text-xl font-bold">Record Audio</div>
-                <div className="text-sm opacity-80">Click to start recording</div>
+                <div className="text-lg sm:text-xl font-bold">Record Audio</div>
+                <div className="text-xs sm:text-sm opacity-80">Click to start recording</div>
               </div>
             </>
           )}
@@ -142,7 +142,7 @@ export default function RecordButton({ onComplete, disabled = false }: Props) {
       </button>
       
       {isRecording && (
-        <div className="text-center text-sm text-white/70 animate-fade-in">
+        <div className="text-center text-xs sm:text-sm text-white/70 animate-fade-in px-2">
           <p>🔴 Recording in progress... Click to stop</p>
         </div>
       )}

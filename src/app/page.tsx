@@ -84,46 +84,46 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-6 relative overflow-hidden">
+    <div className="min-h-screen p-3 sm:p-4 md:p-6 relative overflow-hidden">
       {/* Floating background elements */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl floating-element"></div>
-        <div className="absolute bottom-20 right-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl floating-element" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl floating-element" style={{animationDelay: '4s'}}></div>
+        <div className="absolute top-20 left-10 sm:left-20 w-32 h-32 sm:w-64 sm:h-64 bg-purple-500/20 rounded-full blur-3xl floating-element"></div>
+        <div className="absolute bottom-20 right-10 sm:right-20 w-40 h-40 sm:w-80 sm:h-80 bg-blue-500/20 rounded-full blur-3xl floating-element" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 w-36 h-36 sm:w-72 sm:h-72 bg-pink-500/20 rounded-full blur-3xl floating-element" style={{animationDelay: '4s'}}></div>
       </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto space-y-8">
+      <div className="relative z-10 max-w-6xl mx-auto space-y-4 sm:space-y-6 md:space-y-8">
         {/* Header */}
-        <header className="text-center py-8 animate-fade-in">
-          <div className="text-6xl mb-6 floating-element">🎤</div>
-          <h1 className="text-5xl md:text-6xl font-bold gradient-text mb-4">
+        <header className="text-center py-4 sm:py-6 md:py-8 animate-fade-in">
+          <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6 floating-element">🎤</div>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold gradient-text mb-3 sm:mb-4">
             Speak & Translate
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed mb-6 sm:mb-8 px-4">
             Transform your voice into any language with AI-powered transcription, 
             translation, and natural text-to-speech
           </p>
           
           {/* Feature badges */}
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="glass-card px-4 py-2 flex items-center gap-2">
-              <span className="text-2xl">🎯</span>
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-4 px-4">
+            <div className="glass-card px-3 py-2 sm:px-4 sm:py-2 flex items-center gap-2 text-sm sm:text-base">
+              <span className="text-lg sm:text-2xl">🎯</span>
               <span className="font-medium">Real-time Recording</span>
             </div>
-            <div className="glass-card px-4 py-2 flex items-center gap-2">
-              <span className="text-2xl">🌍</span>
+            <div className="glass-card px-3 py-2 sm:px-4 sm:py-2 flex items-center gap-2 text-sm sm:text-base">
+              <span className="text-lg sm:text-2xl">🌍</span>
               <span className="font-medium">10+ Languages</span>
             </div>
-            <div className="glass-card px-4 py-2 flex items-center gap-2">
-              <span className="text-2xl">🔊</span>
+            <div className="glass-card px-3 py-2 sm:px-4 sm:py-2 flex items-center gap-2 text-sm sm:text-base">
+              <span className="text-lg sm:text-2xl">🔊</span>
               <span className="font-medium">AI Voices</span>
             </div>
           </div>
         </header>
 
         {/* Controls */}
-        <div className="glass-card p-8 animate-slide-up">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="glass-card p-4 sm:p-6 md:p-8 animate-slide-up">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
             <LanguageSelect
               languages={languages}
               value={sourceLang}
@@ -148,7 +148,7 @@ export default function Home() {
                 <select
                   value={voice}
                   onChange={(e) => setVoice(e.target.value)}
-                  className="glass-input w-full appearance-none pr-10"
+                  className="glass-input w-full appearance-none pr-10 text-sm sm:text-base"
                 >
                   {VOICES.map(v => (
                     <option key={v} value={v} className="bg-gray-800 text-white">
@@ -157,7 +157,7 @@ export default function Home() {
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                  <svg className="w-5 h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -167,7 +167,7 @@ export default function Home() {
         </div>
 
         {/* Audio Input */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
           <RecordButton
             onComplete={submitAudio}
             disabled={isProcessing}
@@ -180,12 +180,12 @@ export default function Home() {
 
         {/* Processing Indicator */}
         {isProcessing && (
-          <div className="text-center py-8 animate-fade-in">
-            <div className="glass-card inline-flex items-center gap-4 px-8 py-4">
+          <div className="text-center py-6 sm:py-8 animate-fade-in">
+            <div className="glass-card inline-flex items-center gap-3 sm:gap-4 px-6 sm:px-8 py-3 sm:py-4">
               <div className="relative">
-                <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
               </div>
-              <div className="text-lg font-medium text-white">
+              <div className="text-base sm:text-lg font-medium text-white">
                 Processing your audio...
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center py-8 animate-slide-up" style={{animationDelay: '0.6s'}}>
+        <footer className="text-center py-6 sm:py-8 animate-slide-up" style={{animationDelay: '0.6s'}}>
           <ExportButton 
             messages={messages} 
             disabled={isProcessing}
@@ -209,12 +209,12 @@ export default function Home() {
           
           {/* Stats */}
           {messages.length > 0 && (
-            <div className="mt-6 flex justify-center gap-6 text-sm text-white/70">
-              <div className="glass-card px-4 py-2 flex items-center gap-2">
+            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 text-sm text-white/70">
+              <div className="glass-card px-3 py-2 sm:px-4 sm:py-2 flex items-center justify-center gap-2">
                 <span className="text-purple-400">📊</span>
                 <span>{messages.length} translation{messages.length !== 1 ? 's' : ''}</span>
               </div>
-              <div className="glass-card px-4 py-2 flex items-center gap-2">
+              <div className="glass-card px-3 py-2 sm:px-4 sm:py-2 flex items-center justify-center gap-2">
                 <span className="text-blue-400">🌍</span>
                 <span>{new Set(messages.map(m => m.targetLang)).size} language{new Set(messages.map(m => m.targetLang)).size !== 1 ? 's' : ''}</span>
               </div>

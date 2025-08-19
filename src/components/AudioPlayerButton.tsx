@@ -77,22 +77,22 @@ export default function AudioPlayerButton({
   }
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
       <button
         onClick={handlePlay}
         disabled={loading}
-        className="btn-gradient-primary flex items-center gap-3 text-sm py-3 px-6 disabled:opacity-50"
+        className="btn-gradient-primary flex items-center gap-2 sm:gap-3 text-xs sm:text-sm py-2 sm:py-3 px-4 sm:px-6 disabled:opacity-50 w-full sm:w-auto"
         aria-label="Play translation"
         title="Play translation"
       >
         {loading ? (
           <>
-            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+            <div className="w-3 h-3 sm:w-4 sm:h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
             <span>Generating...</span>
           </>
         ) : (
           <>
-            <span className="text-xl">▶️</span>
+            <span className="text-lg sm:text-xl">▶️</span>
             <span>Play</span>
           </>
         )}
@@ -101,11 +101,11 @@ export default function AudioPlayerButton({
       <button
         onClick={handleDownload}
         disabled={loading}
-        className="btn-gradient-secondary flex items-center gap-3 text-sm py-3 px-6 disabled:opacity-50"
+        className="btn-gradient-secondary flex items-center gap-2 sm:gap-3 text-xs sm:text-sm py-2 sm:py-3 px-4 sm:px-6 disabled:opacity-50 w-full sm:w-auto"
         aria-label="Download audio"
         title="Download audio"
       >
-        <span className="text-xl">⬇️</span>
+        <span className="text-lg sm:text-xl">⬇️</span>
         <span>Download</span>
       </button>
     </div>
