@@ -17,20 +17,20 @@ export function getOpenAI(): OpenAI {
 export const openai = {
   audio: {
     transcriptions: {
-      create: async (...args: Parameters<OpenAI['audio']['transcriptions']['create']>) => {
-        return getOpenAI().audio.transcriptions.create(...args);
+      create: async (params: Parameters<OpenAI['audio']['transcriptions']['create']>[0]) => {
+        return getOpenAI().audio.transcriptions.create(params);
       }
     },
     speech: {
-      create: async (...args: Parameters<OpenAI['audio']['speech']['create']>) => {
-        return getOpenAI().audio.speech.create(...args);
+      create: async (params: Parameters<OpenAI['audio']['speech']['create']>[0]) => {
+        return getOpenAI().audio.speech.create(params);
       }
     }
   },
   chat: {
     completions: {
-      create: async (...args: Parameters<OpenAI['chat']['completions']['create']>) => {
-        return getOpenAI().chat.completions.create(...args);
+      create: async (params: Parameters<OpenAI['chat']['completions']['create']>[0]) => {
+        return getOpenAI().chat.completions.create(params);
       }
     }
   }
