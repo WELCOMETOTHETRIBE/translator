@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
+import { File as NodeFile } from 'node:buffer';
+
+// Polyfill File constructor for older Node.js versions (Railway compatibility)
+if (typeof globalThis.File === 'undefined') {
+  globalThis.File = NodeFile as unknown as typeof globalThis.File;
+}
 
 export async function POST(request: NextRequest) {
   try {
     console.log('Transcribe API called');
     
     const formData = await request.formData();
-    const audioFile = formData.get('audio') as File;
+    const audioFile = formData.get('audio') as unknown as File;
     const sourceLang = formData.get('sourceLang') as string;
     const targetLang = formData.get('targetLang') as string;
     
