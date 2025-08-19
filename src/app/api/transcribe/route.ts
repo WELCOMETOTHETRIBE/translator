@@ -1,43 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { openai } from '@/lib/openai';
-import { isValidAudioFile, normalizeLanguageCode } from '@/lib/validate';
-
-export const runtime = 'nodejs';
+import { getOpenAI } from '@/lib/openai';
+import { normalizeLanguageCode } from '@/lib/validate';
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const audioFile = formData.get('audio') as File;
-    const sourceLang = (formData.get('sourceLang') as string) || 'auto';
-    const targetLang = (formData.get('targetLang') as string) || 'en';
+    const sourceLang = formData.get('sourceLang') as string;
+    const targetLang = formData.get('targetLang') as string;
 
     if (!audioFile) {
+      return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
+    }
+
+    // Validate file size (25MB limit for OpenAI)
+    if (audioFile.size > 25 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large. Maximum size is 25MB.' }, { status: 400 });
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'audio/wav', 'audio/mp3', 'audio/mpeg', 'audio/m4a', 
+      'audio/webm', 'audio/ogg', 'audio/flac', 'audio/mp4'
+    ];
+    
+    if (!allowedTypes.includes(audioFile.type)) {
       return NextResponse.json(
-        { error: 'Audio file is required' },
+        { error: 'Invalid file type. Please use WAV, MP3, M4A, WebM, OGG, FLAC, or MP4 files.' },
         { status: 400 }
       );
     }
 
-    // Debug logging for file validation
-    console.log('File validation details:', {
-      name: audioFile.name,
-      type: audioFile.type,
-      size: audioFile.size,
-      isValid: isValidAudioFile(audioFile)
-    });
-
-    if (!isValidAudioFile(audioFile)) {
-      return NextResponse.json(
-        { error: `Invalid audio file. Received type: ${audioFile.type}, size: ${audioFile.size} bytes. Must be WAV, MP3, M4A, WebM, or OGG and under 25MB` },
-        { status: 400 }
-      );
-    }
-
-    // Convert File to Buffer for OpenAI
+    // Convert file to buffer
     const arrayBuffer = await audioFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-
-    // Ensure we have a valid file extension for OpenAI
+    
+    // Ensure file has proper extension
     let fileName = audioFile.name;
     if (!fileName.includes('.')) {
       // If no extension, add one based on MIME type
@@ -63,6 +61,9 @@ export async function POST(request: NextRequest) {
       size: buffer.length,
       originalName: audioFile.name
     });
+    
+    // Get OpenAI client
+    const openai = getOpenAI();
     
     // Transcribe audio with fallback approach
     let transcription;
