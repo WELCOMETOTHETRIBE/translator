@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
-import { Readable } from 'stream';
+import FormData from 'form-data';
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,39 +75,31 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio using buffer directly (Node.js compatible)
+    // Transcribe audio using form-data with buffer
     let transcription;
     try {
-      // Use buffer directly with OpenAI API
+      // Create FormData with the buffer
+      const form = new FormData();
+      form.append('file', buffer, {
+        filename: fileName,
+        contentType: audioFile.type,
+      });
+      form.append('model', 'whisper-1');
+      if (sourceLang !== 'auto') {
+        form.append('language', normalizeLanguageCode(sourceLang));
+      }
+      
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as unknown as File,
+        file: form as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
-      console.error('Buffer transcription attempt failed:', transcriptionError);
+      console.error('FormData transcription attempt failed:', transcriptionError);
       
-      // If buffer approach fails, try with a different method
-      // Create a proper File-like object that OpenAI can handle
-      const fileLike = {
-        type: audioFile.type,
-        size: buffer.length,
-        name: fileName,
-        arrayBuffer: async () => buffer,
-        stream: () => Readable.from(buffer),
-        slice: (start: number, end: number) => {
-          const slicedBuffer = buffer.slice(start, end);
-          return {
-            type: audioFile.type,
-            size: slicedBuffer.length,
-            arrayBuffer: async () => slicedBuffer,
-            stream: () => Readable.from(slicedBuffer)
-          };
-        }
-      };
-      
+      // Fallback: try with buffer directly
       transcription = await openai.audio.transcriptions.create({
-        file: fileLike as unknown as File,
+        file: buffer as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
