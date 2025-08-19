@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
         type: audioFile.type,
         size: buffer.length,
         name: fileName,
-        arrayBuffer: async () => buffer,
+        arrayBuffer: buffer,
         stream: () => {
           return Readable.from(buffer);
         }
@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
         type: audioFile.type,
         size: buffer.length,
         name: fileName,
-        arrayBuffer: async () => buffer
+        arrayBuffer: buffer
       };
       
       transcription = await openai.audio.transcriptions.create({
