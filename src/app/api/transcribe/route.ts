@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
-import { Readable } from 'stream';
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,14 +74,15 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
 
-    // Transcribe audio using Node.js-compatible file-like object
+    // Create a proper file-like object that works both locally and on Railway
+    // This approach avoids function properties that the OpenAI API rejects
     const fileLike = {
       type: audioFile.type,
       size: buffer.length,
       name: fileName,
-      arrayBuffer: buffer,
-      stream: () => {
-        return Readable.from(buffer);
+      // Provide the buffer directly without function wrappers
+      [Symbol.asyncIterator]: async function* () {
+        yield buffer;
       }
     };
 
