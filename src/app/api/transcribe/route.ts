@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
-import FormData from 'form-data';
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,24 +74,21 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio using FormData approach
+    // Transcribe audio using File object created from buffer
     let transcription;
     try {
-      const form = new FormData();
-      form.append('file', buffer, {
-        filename: fileName,
-        contentType: audioFile.type,
-      });
+      // Create a proper File object from the buffer
+      const file = new File([buffer], fileName, { type: audioFile.type });
       
       transcription = await openai.audio.transcriptions.create({
-        file: form as unknown as File,
+        file: file,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
-      console.error('FormData transcription attempt failed:', transcriptionError);
+      console.error('File transcription attempt failed:', transcriptionError);
       
-      // Try with a different approach - use buffer directly
+      // Fallback: try with buffer directly
       transcription = await openai.audio.transcriptions.create({
         file: buffer as unknown as File,
         model: 'whisper-1',
