@@ -77,19 +77,40 @@ export async function POST(request: NextRequest) {
     // Transcribe audio with fallback approach
     let transcription;
     try {
-      // Create a Blob-like object for Node.js
-      const blob = new Blob([buffer], { type: audioFile.type });
+      // Create a file-like object that OpenAI can handle
+      const fileObject = {
+        name: fileName,
+        type: audioFile.type,
+        size: buffer.length,
+        arrayBuffer: () => Promise.resolve(buffer.buffer),
+        stream: () => {
+          const { Readable } = require('stream');
+          return Readable.from(buffer);
+        }
+      };
+      
       transcription = await openai.audio.transcriptions.create({
-        file: blob,
+        file: fileObject as any,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
       console.error('First transcription attempt failed:', transcriptionError);
       
-      // Try with a different approach - use buffer directly
+      // Try with a different approach - use FormData
+      const FormData = require('form-data');
+      const form = new FormData();
+      form.append('file', buffer, {
+        filename: fileName,
+        contentType: audioFile.type,
+      });
+      form.append('model', 'whisper-1');
+      if (sourceLang !== 'auto') {
+        form.append('language', normalizeLanguageCode(sourceLang));
+      }
+      
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as unknown as File,
+        file: form as any,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
