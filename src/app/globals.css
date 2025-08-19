@@ -1,26 +1,98 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    height: 100%;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    color: white;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl;
+  }
+  
+  .glass-input {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-4 py-3 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40;
+  }
+  
+  .btn-gradient-primary {
+    @apply bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+  }
+  
+  .btn-gradient-secondary {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+  }
+  
+  .btn-gradient-accent {
+    @apply bg-gradient-to-r from-pink-500 to-red-500 text-white font-semibold rounded-2xl px-6 py-4 shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 transition-all duration-200;
+  }
+  
+  .message-bubble-left {
+    @apply bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-3xl p-6 backdrop-blur-sm;
+  }
+  
+  .message-bubble-right {
+    @apply bg-gradient-to-br from-green-500/20 to-emerald-500/20 border border-green-400/30 rounded-3xl p-6 backdrop-blur-sm;
+  }
+  
+  .floating-element {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.6s ease-out forwards;
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
