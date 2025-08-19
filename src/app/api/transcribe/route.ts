@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
+import { Readable } from 'stream';
 
 export async function POST(request: NextRequest) {
   try {
@@ -74,9 +75,19 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
 
-    // Transcribe audio
+    // Transcribe audio using Node.js-compatible file-like object
+    const fileLike = {
+      type: audioFile.type,
+      size: buffer.length,
+      name: fileName,
+      arrayBuffer: () => Promise.resolve(buffer),
+      stream: () => {
+        return Readable.from(buffer);
+      }
+    };
+
     const transcription = await openai.audio.transcriptions.create({
-      file: new File([buffer], audioFile.name, { type: audioFile.type }),
+      file: fileLike as unknown as File,
       model: 'whisper-1',
       language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
     });
