@@ -18,13 +18,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'File too large. Maximum size is 25MB.' }, { status: 400 });
     }
 
-    // Validate file type
-    const allowedTypes = [
+    // Validate file type (check base MIME type, ignoring codec specifications)
+    const allowedBaseTypes = [
       'audio/wav', 'audio/mp3', 'audio/mpeg', 'audio/m4a', 
       'audio/webm', 'audio/ogg', 'audio/flac', 'audio/mp4'
     ];
     
-    if (!allowedTypes.includes(audioFile.type)) {
+    const baseType = audioFile.type.split(';')[0]; // Remove codec specification
+    
+    if (!allowedBaseTypes.includes(baseType)) {
       return NextResponse.json(
         { error: 'Invalid file type. Please use WAV, MP3, M4A, WebM, OGG, FLAC, or MP4 files.' },
         { status: 400 }
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
         'audio/webm': '.webm',
         'audio/ogg': '.ogg',
       };
-      const ext = mimeToExt[audioFile.type] || '.mp3';
+      const ext = mimeToExt[baseType] || '.mp3';
       fileName = `audio${ext}`;
     }
 
