@@ -88,18 +88,26 @@ export async function POST(request: NextRequest) {
       console.error('Buffer transcription attempt failed:', transcriptionError);
       
       // If buffer approach fails, try with a different method
-      // Create a Blob-like object that OpenAI can handle
-      const blob = {
+      // Create a proper File-like object that OpenAI can handle
+      const fileLike = {
         type: audioFile.type,
         size: buffer.length,
-        arrayBuffer: () => Promise.resolve(buffer),
-        stream: () => {
-          return Readable.from(buffer);
+        name: fileName,
+        arrayBuffer: async () => buffer,
+        stream: () => Readable.from(buffer),
+        slice: (start: number, end: number) => {
+          const slicedBuffer = buffer.slice(start, end);
+          return {
+            type: audioFile.type,
+            size: slicedBuffer.length,
+            arrayBuffer: async () => slicedBuffer,
+            stream: () => Readable.from(slicedBuffer)
+          };
         }
       };
       
       transcription = await openai.audio.transcriptions.create({
-        file: blob as unknown as File,
+        file: fileLike as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
