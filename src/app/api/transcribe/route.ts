@@ -74,43 +74,27 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio with fallback approach
+    // Transcribe audio using FormData approach
     let transcription;
     try {
-      // Create a file-like object that OpenAI can handle
-      const fileObject = {
-        name: fileName,
-        type: audioFile.type,
-        size: buffer.length,
-        arrayBuffer: () => Promise.resolve(buffer.buffer),
-        stream: () => {
-          const { Readable } = require('stream');
-          return Readable.from(buffer);
-        }
-      };
-      
-      transcription = await openai.audio.transcriptions.create({
-        file: fileObject as any,
-        model: 'whisper-1',
-        language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
-      });
-    } catch (transcriptionError) {
-      console.error('First transcription attempt failed:', transcriptionError);
-      
-      // Try with a different approach - use FormData
       const FormData = require('form-data');
       const form = new FormData();
       form.append('file', buffer, {
         filename: fileName,
         contentType: audioFile.type,
       });
-      form.append('model', 'whisper-1');
-      if (sourceLang !== 'auto') {
-        form.append('language', normalizeLanguageCode(sourceLang));
-      }
       
       transcription = await openai.audio.transcriptions.create({
         file: form as any,
+        model: 'whisper-1',
+        language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
+      });
+    } catch (transcriptionError) {
+      console.error('FormData transcription attempt failed:', transcriptionError);
+      
+      // Try with a different approach - use buffer directly
+      transcription = await openai.audio.transcriptions.create({
+        file: buffer as any,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
