@@ -4,10 +4,20 @@ import { normalizeLanguageCode } from '@/lib/validate';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('Transcribe API called');
+    
     const formData = await request.formData();
     const audioFile = formData.get('audio') as File;
     const sourceLang = formData.get('sourceLang') as string;
     const targetLang = formData.get('targetLang') as string;
+    
+    console.log('Form data received:', {
+      hasAudioFile: !!audioFile,
+      sourceLang,
+      targetLang,
+      audioFileType: audioFile?.type,
+      audioFileSize: audioFile?.size
+    });
 
     if (!audioFile) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
@@ -134,7 +144,20 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
+      if (error.message.includes('OPENAI_API_KEY')) {
+        return NextResponse.json(
+          { error: 'OpenAI API key is not configured. Please contact support.' },
+          { status: 500 }
+        );
+      }
     }
+    
+    // Log the full error for debugging
+    console.error('Full error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      error: error
+    });
     
     return NextResponse.json(
       { error: 'Failed to transcribe audio. Please try again.' },
