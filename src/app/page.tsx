@@ -74,7 +74,7 @@ export default function Home() {
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'object' && error !== null && 'error' in error) {
-        errorMessage = (error as any).error;
+        errorMessage = (error as { error: string }).error;
       }
       
       alert(errorMessage);
