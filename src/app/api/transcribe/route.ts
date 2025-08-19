@@ -63,9 +63,6 @@ export async function POST(request: NextRequest) {
       fileName = `audio${ext}`;
     }
 
-    // Create a proper file object for OpenAI
-    const file = new File([buffer], fileName, { type: audioFile.type });
-    
     // Debug logging
     console.log('File details:', {
       name: fileName,
@@ -80,20 +77,19 @@ export async function POST(request: NextRequest) {
     // Transcribe audio with fallback approach
     let transcription;
     try {
+      // Create a Blob-like object for Node.js
+      const blob = new Blob([buffer], { type: audioFile.type });
       transcription = await openai.audio.transcriptions.create({
-        file: file,
+        file: blob,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
       console.error('First transcription attempt failed:', transcriptionError);
       
-      // Try with a different approach - create file with explicit extension
-      const fallbackFileName = fileName.includes('.') ? fileName : `audio.mp3`;
-      const fallbackFile = new File([buffer], fallbackFileName, { type: 'audio/mpeg' });
-      
+      // Try with a different approach - use buffer directly
       transcription = await openai.audio.transcriptions.create({
-        file: fallbackFile,
+        file: buffer as any,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
