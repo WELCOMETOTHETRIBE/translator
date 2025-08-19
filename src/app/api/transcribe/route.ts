@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       type: audioFile.type,
       size: buffer.length,
       name: fileName,
-      arrayBuffer: () => Promise.resolve(buffer),
+      arrayBuffer: buffer,
       stream: () => {
         return Readable.from(buffer);
       }
