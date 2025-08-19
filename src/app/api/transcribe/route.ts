@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
       
       // Try with a different approach - use buffer directly
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as any,
+        file: buffer as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
