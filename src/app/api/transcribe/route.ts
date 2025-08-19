@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getOpenAI } from '@/lib/openai';
 import { normalizeLanguageCode } from '@/lib/validate';
+import { Readable } from 'stream';
 
 export async function POST(request: NextRequest) {
   try {
@@ -74,23 +75,31 @@ export async function POST(request: NextRequest) {
     // Get OpenAI client
     const openai = getOpenAI();
     
-    // Transcribe audio using File object created from buffer
+    // Transcribe audio using buffer directly (Node.js compatible)
     let transcription;
     try {
-      // Create a proper File object from the buffer
-      const file = new File([buffer], fileName, { type: audioFile.type });
-      
+      // Use buffer directly with OpenAI API
       transcription = await openai.audio.transcriptions.create({
-        file: file,
+        file: buffer as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
     } catch (transcriptionError) {
-      console.error('File transcription attempt failed:', transcriptionError);
+      console.error('Buffer transcription attempt failed:', transcriptionError);
       
-      // Fallback: try with buffer directly
+      // If buffer approach fails, try with a different method
+      // Create a Blob-like object that OpenAI can handle
+      const blob = {
+        type: audioFile.type,
+        size: buffer.length,
+        arrayBuffer: () => Promise.resolve(buffer),
+        stream: () => {
+          return Readable.from(buffer);
+        }
+      };
+      
       transcription = await openai.audio.transcriptions.create({
-        file: buffer as unknown as File,
+        file: blob as unknown as File,
         model: 'whisper-1',
         language: sourceLang === 'auto' ? undefined : normalizeLanguageCode(sourceLang),
       });
