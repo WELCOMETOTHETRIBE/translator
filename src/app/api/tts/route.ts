@@ -13,7 +13,7 @@ const FORMAT_MAP = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { text, voice = "Alloy", format = "mp3" } = await req.json();
+    const { text, voice = "alloy", format = "mp3" } = await req.json();
 
     if (!text || typeof text !== "string" || !text.trim()) {
       return new Response(JSON.stringify({ error: "Text is required" }), { status: 400 });
@@ -23,7 +23,13 @@ export async function POST(req: NextRequest) {
       return new Response(JSON.stringify({ error: "Text too long (max 10k chars)" }), { status: 400 });
     }
 
-    const v = ALLOWED_VOICES.includes(voice) ? voice : "alloy";
+    // Ensure voice is lowercase and validate it
+    const normalizedVoice = voice.toLowerCase().trim();
+    const v = ALLOWED_VOICES.includes(normalizedVoice) ? normalizedVoice : "alloy";
+    
+    // Log voice selection for debugging
+    console.log('TTS Voice selection:', { original: voice, normalized: normalizedVoice, final: v });
+    
     const fmt = (["mp3","wav","opus"].includes(format) ? format : "mp3") as "mp3"|"wav"|"opus";
 
     // Prefer newer TTS model if available; fallback gracefully

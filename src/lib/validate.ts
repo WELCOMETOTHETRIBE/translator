@@ -64,4 +64,4 @@ export const DEFAULT_LANGUAGES: Array<{ code: string; label: string }> = [
   { code: 'ur', label: 'Urdu' }
 ];
 
-export const VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "coral", "verse", "ballad", "ash", "sage"]; 
+export const VOICES = ["alloy", "echo", "fable", "onyx", "nova", "shimmer", "coral", "ash", "sage"]; 
