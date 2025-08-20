@@ -100,13 +100,40 @@ export async function POST(request: NextRequest) {
 
     const transcript = transcription.text;
 
+    // Get language name from code for better translation
+    const getLanguageName = (code: string): string => {
+      const languageMap: { [key: string]: string } = {
+        'en': 'English',
+        'es': 'Spanish',
+        'fr': 'French',
+        'it': 'Italian',
+        'pt': 'Portuguese',
+        'ru': 'Russian',
+        'zh': 'Chinese',
+        'hi': 'Hindi',
+        'ar': 'Arabic',
+        'bn': 'Bengali',
+        'ur': 'Urdu'
+      };
+      return languageMap[code.toLowerCase()] || code;
+    };
+
+    // Debug logging for translation
+    console.log('Translation request:', {
+      sourceLang,
+      targetLang,
+      normalizedTargetLang: normalizeLanguageCode(targetLang),
+      languageName: getLanguageName(targetLang),
+      transcript: transcript.substring(0, 100) + '...'
+    });
+
     // Translate transcript
     const translationResponse = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `You are a precise translator. Translate the user's text into ${targetLang} while preserving meaning, tone, and punctuation. Do not add commentary.`
+          content: `You are a precise translator. Translate the user's text into ${getLanguageName(targetLang)} while preserving meaning, tone, and punctuation. Do not add commentary.`
         },
         {
           role: 'user',
@@ -117,6 +144,12 @@ export async function POST(request: NextRequest) {
     });
 
     const translation = translationResponse.choices[0]?.message?.content || '';
+
+    // Debug logging for translation result
+    console.log('Translation result:', {
+      targetLang,
+      translation: translation.substring(0, 100) + '...'
+    });
 
     return NextResponse.json({
       transcript,
