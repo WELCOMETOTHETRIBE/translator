@@ -54,6 +54,7 @@ export const DEFAULT_LANGUAGES: Array<{ code: string; label: string }> = [
   { code: 'en', label: 'English' },
   { code: 'zh', label: 'Mandarin Chinese' },
   { code: 'hi', label: 'Hindi' },
+  { code: 'it', label: 'Italian' },
   { code: 'es', label: 'Spanish' },
   { code: 'fr', label: 'French' },
   { code: 'ar', label: 'Arabic' },
