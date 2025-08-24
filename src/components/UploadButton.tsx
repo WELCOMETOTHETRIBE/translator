@@ -29,7 +29,7 @@ export default function UploadButton({ onSelect, disabled = false }: Props) {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="flex flex-col h-full">
       <input
         ref={fileInputRef}
         type="file"
@@ -42,7 +42,7 @@ export default function UploadButton({ onSelect, disabled = false }: Props) {
         onClick={handleClick}
         disabled={disabled}
         className="
-          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300
+          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300 flex-shrink-0
           btn-gradient-secondary hover:shadow-2xl
           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100
           border-2 border-dashed border-white/30 hover:border-white/50
@@ -57,7 +57,7 @@ export default function UploadButton({ onSelect, disabled = false }: Props) {
         </div>
       </button>
       
-      <div className="text-center text-xs sm:text-sm text-white/70 px-2">
+      <div className="text-center text-xs sm:text-sm text-white/70 px-2 mt-3">
         <p>Maximum file size: 25MB</p>
       </div>
     </div>

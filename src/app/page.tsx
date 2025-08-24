@@ -168,14 +168,18 @@ export default function Home() {
 
         {/* Audio Input */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 animate-slide-up" style={{animationDelay: '0.2s'}}>
-          <RecordButton
-            onComplete={submitAudio}
-            disabled={isProcessing}
-          />
-          <UploadButton
-            onSelect={submitAudio}
-            disabled={isProcessing}
-          />
+          <div className="flex flex-col h-full">
+            <RecordButton
+              onComplete={submitAudio}
+              disabled={isProcessing}
+            />
+          </div>
+          <div className="flex flex-col h-full">
+            <UploadButton
+              onSelect={submitAudio}
+              disabled={isProcessing}
+            />
+          </div>
         </div>
 
         {/* Processing Indicator */}

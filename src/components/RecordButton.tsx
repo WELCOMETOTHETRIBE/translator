@@ -99,12 +99,12 @@ export default function RecordButton({ onComplete, disabled = false }: Props) {
   }, []);
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="flex flex-col h-full">
       <button
         onClick={isRecording ? stopRecording : startRecording}
         disabled={disabled}
         className={`
-          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300 relative overflow-hidden
+          w-full h-16 sm:h-20 md:h-24 rounded-2xl sm:rounded-3xl font-semibold text-base sm:text-lg transition-all duration-300 relative overflow-hidden flex-shrink-0
           ${isRecording 
             ? 'btn-gradient-accent hover:shadow-2xl' 
             : 'btn-gradient-primary hover:shadow-2xl'
@@ -142,7 +142,7 @@ export default function RecordButton({ onComplete, disabled = false }: Props) {
       </button>
       
       {isRecording && (
-        <div className="text-center text-xs sm:text-sm text-white/70 animate-fade-in px-2">
+        <div className="text-center text-xs sm:text-sm text-white/70 animate-fade-in px-2 mt-3">
           <p>🔴 Recording in progress... Click to stop</p>
         </div>
       )}
